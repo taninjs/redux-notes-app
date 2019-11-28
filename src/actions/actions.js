@@ -6,7 +6,7 @@ export const REMOVE_NOTE = 'REMOVE_NOTE'
 export function addNote(title, content) {
   return {
     type: ADD_NOTE,
-    id: uniqueId(),
+    id: new Date().getTime().toString(),
     title: title,
     content: content
   }

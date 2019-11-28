@@ -11,6 +11,7 @@ let addNoteContent = addNoteForm['content'];
 
 // ------ Redux ------
 store.subscribe(() => {
+  localStorage.setItem('notes', JSON.stringify(store.getState().notes))
   renderNotes();
 })
 
