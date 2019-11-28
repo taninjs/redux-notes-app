@@ -1,5 +1,5 @@
 import store from './store/store'
-import { addNote } from './actions/actions'
+import { addNote, removeNote } from './actions/actions'
 
 
 // ------ HTML references ------
@@ -15,8 +15,8 @@ store.subscribe(() => {
 })
 
 function deleteNote(id) {
-
-  // console.log(id);
+  console.log(id);
+  store.dispatch(removeNote(id))
 }
 
 function renderNotes() {
@@ -36,6 +36,18 @@ function renderNotes() {
     `;
 
     notesUList.innerHTML += noteItem
+  }
+
+  setDeleteNoteButtonsEventListeners()
+}
+
+function setDeleteNoteButtonsEventListeners() {
+  let buttons = document.querySelectorAll('ul#notes li button')
+
+  for (let button of buttons) {
+    button.addEventListener('click', () => {
+      deleteNote(button.dataset.id)
+    })
   }
 }
 

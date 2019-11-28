@@ -1,4 +1,4 @@
-import { ADD_NOTE } from '../actions/actions';
+import { ADD_NOTE, REMOVE_NOTE } from '../actions/actions';
 
 const initialState = {
   notes: []
@@ -21,6 +21,11 @@ function rootReducer(state = initialState, action) {
           }
         ]
       };
+    case REMOVE_NOTE:
+      return {
+        ...state,
+        notes: state.notes.filter(x => x.id !== action.id)
+      }
 
     default:
       return state;
