@@ -1,10 +1,11 @@
-import { ADD_NOTE, REMOVE_NOTE } from '../actions/actions';
+import { ADD_NOTE, UPDATE_SEARCH, REMOVE_NOTE } from '../actions/actions'
 
 const initialState = {
-  notes: []
-};
+  notes: [],
+  search: '',
+}
 
-function rootReducer(state = initialState, action) {
+export function rootReducer(state = initialState, action) {
   switch (action.type) {
     case ADD_NOTE:
       return {
@@ -20,16 +21,18 @@ function rootReducer(state = initialState, action) {
             content: action.content
           }
         ]
-      };
+      }
     case REMOVE_NOTE:
       return {
         ...state,
         notes: state.notes.filter(x => x.id !== action.id)
       }
-
+    case UPDATE_SEARCH:
+      return {
+        ...state,
+        search: action.value
+      }
     default:
-      return state;
-  };
+      return state
+  }
 }
-
-export default rootReducer;

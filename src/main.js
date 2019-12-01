@@ -1,68 +1,76 @@
+import { addNote, updateSearch, removeNote } from './actions/actions'
 import store from './store/store'
-import { addNote, removeNote } from './actions/actions'
-
 
 // ------ HTML references ------
 let notesUList = document.getElementById('notes');
 let addNoteForm = document.getElementById('add-note');
 let addNoteTitle = addNoteForm['title'];
 let addNoteContent = addNoteForm['content'];
+let searchInput = document.getElementById('search')
 
 
 // ------ Redux ------
-store.subscribe(() => {
-  localStorage.setItem('notes', JSON.stringify(store.getState().notes))
-  renderNotes();
+store.subscribe(function () {
+  localStorage.setItem('notes', JSON.stringify(store.getState()))
+  renderNotes()
 })
 
 function deleteNote(id) {
-  console.log(id);
   store.dispatch(removeNote(id))
 }
 
 function renderNotes() {
-  // Clear notes
   notesUList.innerHTML = ''
 
-  // Render notes
-  let notes = store.getState().notes;
+  let state = store.getState()
+  let search = state.search
+  let notes = state.notes
+
+  if (search) {
+    notes = notes.filter(note => note.title.includes(search))
+  }
+
   for (let note of notes) {
-    let noteItem = `
+    notesUList.innerHTML += `
       <li>
-        <b>${note.title}</b>
-        <button data-id="${note.id}">x</button>
-        <br />
-        <span>${note.content}</span>
+        ${note.title} <button data-id="${note.id}">x</button>
+        <p>${note.content}</p>
       </li>
-    `;
-
-    notesUList.innerHTML += noteItem
+    `
   }
 
-  setDeleteNoteButtonsEventListeners()
-}
-
-function setDeleteNoteButtonsEventListeners() {
-  let buttons = document.querySelectorAll('ul#notes li button')
-
-  for (let button of buttons) {
-    button.addEventListener('click', () => {
-      deleteNote(button.dataset.id)
-    })
-  }
+  setDeleteNoteButtonsEventListeners();
 }
 
 
 // ------ Event Listeners ------
+function setDeleteNoteButtonsEventListeners() {
+  let buttons = document.querySelectorAll('ul#notes li button');
+
+  for (let button of buttons) {
+    button.addEventListener('click', () => {
+      deleteNote(button.dataset.id);
+    });
+  }
+}
+
 addNoteForm.addEventListener('submit', (e) => {
   e.preventDefault();
 
   let title = addNoteTitle.value
   let content = addNoteContent.value
+  let action = addNote(title, content)
 
-  store.dispatch(addNote(title, content))
+  store.dispatch(action)
+
+  // Clear inputs
+  addNoteTitle.value = ''
+  addNoteContent.value = ''
 });
 
+searchInput.addEventListener('keyup', () => {
+  store.dispatch(updateSearch(searchInput.value))
+})
 
 // ------ Render the initial Notes ------
 renderNotes();
